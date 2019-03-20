@@ -7,10 +7,20 @@
     {
         public static void Main()
         {
-            var input = Console.ReadLine().Split();
-            var car = new Car(double.Parse(input[1]), double.Parse(input[2]));
-            input = Console.ReadLine()?.Split();
-            Vehicle truck = new Truck(double.Parse(input[1]), double.Parse(input[2]));
+            var input = Console.ReadLine()
+                .Split();
+
+            var car = new Car(double.Parse(input[1]), double.Parse(input[2]), int.Parse(input[3]));
+
+            input = Console.ReadLine()
+                .Split();
+
+            var truck = new Truck(double.Parse(input[1]), double.Parse(input[2]), int.Parse(input[3]));
+
+            input = Console.ReadLine()
+                .Split();
+
+            var bus = new Bus(double.Parse(input[1]), double.Parse(input[2]), int.Parse(input[3]));
 
             var count = int.Parse(Console.ReadLine());
            
@@ -30,11 +40,15 @@
                     case nameof(Truck):
                         ExecuteCommand(truck, command, value);
                         break;
+                    case nameof(Bus):
+                        ExecuteCommand(bus, command, value);
+                        break;
                 }
             }
 
             Console.WriteLine(car);
             Console.WriteLine(truck);
+            Console.WriteLine(bus);
         }
 
         private static void ExecuteCommand(Vehicle vehicle, string command, double value)
@@ -45,7 +59,20 @@
                     Console.WriteLine(vehicle.Drive(value));
                     break;
                 case "Refuel":
-                    vehicle.Refuel(value);
+                    try
+                    {
+                        vehicle.Refuel(value);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        Console.WriteLine(e.Message);                   
+                    }
+                    
+                    break;
+
+                case "DriveEmpty":
+                    var bus = vehicle as Bus;
+                    Console.WriteLine(bus.DriveEmpty(value));
                     break;
             }
         }

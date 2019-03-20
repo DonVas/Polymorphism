@@ -1,28 +1,46 @@
-﻿namespace Vehicles
+﻿using System;
+
+namespace Vehicles
 {
-    public abstract class Vehicle
+    public abstract class Vehicle 
     {
+        private int tankCapacity;
         private double fuelQuantity;
 
-        protected Vehicle(double fuelConsumption, double fuelConsumptionPerKm)
+        protected Vehicle(double fuelConsumption, double fuelConsumptionPerKm, int tankCapacity)
         {
+            this.TankCapacity = tankCapacity;
             this.FuelQuantity = fuelConsumption;
             this.FuelConsumptionPerKm = fuelConsumptionPerKm;
+           
         }
 
-        private double FuelConsumptionPerKm { get; set; }
+        public  double FuelConsumptionPerKm { get; protected set; }
+        public int TankCapacity { get; private set; }
 
-        private double FuelQuantity { get; set; }
-
-        protected abstract double AdditionalConsumption { get; }
+        public double FuelQuantity
+        {
+            get => this.fuelQuantity;
+            protected set
+            {
+                if (value > this.TankCapacity)
+                {
+                    this.fuelQuantity = 0;
+                }
+                else
+                {
+                    this.fuelQuantity = value;
+                }                
+            }
+        }                 
 
         public string Drive(double distance)
         {
-            double requiredFuel = (FuelConsumptionPerKm + AdditionalConsumption) * distance;
+            double requiredFuel = this.FuelConsumptionPerKm * distance;
 
-            if (requiredFuel <= FuelQuantity)
+            if (requiredFuel <= this.FuelQuantity)
             {
-                FuelQuantity -= requiredFuel;
+                this.FuelQuantity -= requiredFuel;
                 return $"{this.GetType().Name} travelled {distance} km";
             }
 
@@ -31,14 +49,21 @@
 
         public virtual void Refuel(double fuel)
         {
-            FuelQuantity += fuel;
+            if (this.FuelQuantity + fuel > this.TankCapacity)
+            {
+                throw new ArgumentException($"Cannot fit {fuel} fuel in the tank");
+            }
+            else if(fuel <= 0)
+            {
+                throw new ArgumentException("Fuel must be a positive number");
+            }
+
+            this.FuelQuantity += fuel;
         }
 
         public override string ToString()
         {
-            return $"{this.GetType().Name}: {FuelQuantity:F2}";
+            return $"{this.GetType().Name}: {this.FuelQuantity:F2}";
         }
-
-
     }
 }

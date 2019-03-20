@@ -4,12 +4,10 @@
     {
         private const double additionalConsumptionPerKm = 0.9;
 
-        public Car(double fuelConsumption, double fuelConsumptionPerKm) 
-            : base(fuelConsumption, fuelConsumptionPerKm)
+        public Car(double fuelConsumption, double fuelConsumptionPerKm, int tankCapacity) 
+            : base(fuelConsumption, fuelConsumptionPerKm + additionalConsumptionPerKm, tankCapacity)
         {
         }
-
-        protected override double AdditionalConsumption => additionalConsumptionPerKm;
      
     }
 }
